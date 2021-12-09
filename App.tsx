@@ -1,10 +1,16 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import AnimatedStyleUpdateExample from "./AnimatedStyleUpdateExample";
+// import AnimatedStyleUpdateExample from "./AnimatedStyleUpdateExample";
+import { Slider } from "./slider/Slider";
+// import { StatusBar } from "expo-status-bar";
 
 export default function App() {
-  return <AnimatedStyleUpdateExample />;
+  return (
+    <View style={styles.container}>
+      <Slider />
+    </View>
+  );
+  // return <AnimatedStyleUpdateExample />;
   // return (
   //   <View style={styles.container}>
   //     <Text>Open up App.tsx to start working on your app!</Text>
@@ -16,7 +22,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ddd",
     alignItems: "center",
     justifyContent: "center",
   },
