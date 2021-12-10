@@ -28,7 +28,7 @@ const SvgComponent = ({ animatedProps }: SvgComponentProps) => (
   <Svg viewBox="0 0 512 512" height={BALLOON_WIDTH} width={BALLOON_WIDTH}>
     <AnimatedPath
       animatedProps={animatedProps}
-      d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm80 248c0 44.112-35.888 80-80 80s-80-35.888-80-80 35.888-80 80-80 80 35.888 80 80z"
+      d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"
     />
   </Svg>
 );
@@ -86,8 +86,8 @@ export const Slider = () => {
   const balloonColorStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       translateX.value,
-      [0, SLIDER_RANGE],
-      [Colors.delete, Colors.celtic]
+      [0, SLIDER_RANGE / 2, SLIDER_RANGE],
+      [Colors.delete, Colors.littleMissNoName, Colors.celtic]
     );
 
     return {
@@ -98,8 +98,8 @@ export const Slider = () => {
   const animatedAccessoryColor = useDerivedValue(() => {
     return interpolateColor(
       translateX.value,
-      [0, SLIDER_RANGE],
-      [Colors.delete, Colors.celtic]
+      [0, SLIDER_RANGE / 2, SLIDER_RANGE],
+      [Colors.delete, Colors.littleMissNoName, Colors.celtic]
     );
   });
 
@@ -125,12 +125,12 @@ export const Slider = () => {
 
   console.log({ scrollTranslationStyle });
 
-  // const svgX = useDerivedValue(() => withSpring(t1.x.value))
+  const svgX = useDerivedValue(() => withSpring(translateX.value));
 
   const svgTransitionX = useAnimatedStyle(() => {
     return {
       transform: [
-        { translateX: translateX.value + (KNOB_WIDTH - BALLOON_WIDTH) / 2 },
+        { translateX: svgX.value + (KNOB_WIDTH - BALLOON_WIDTH) / 2 },
       ],
     };
   });
