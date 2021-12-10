@@ -5,15 +5,14 @@ import Animated, {
   useSharedValue,
   useAnimatedGestureHandler,
   useAnimatedStyle,
-  interpolateNode,
-  Extrapolate,
-  interpolateColors,
+  interpolateColor,
 } from "react-native-reanimated";
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
 } from "react-native-gesture-handler";
 import { clamp } from "./utils";
+import Colors from "./Colors";
 
 const SLIDER_WIDTH = 300;
 const KNOB_WIDTH = 70;
@@ -77,10 +76,17 @@ export const Slider = () => {
   //   };
   // });
 
-  //   const ballonBackgroundColor = interpolateColors(percentAnimatedValue.current, {
-  //     inputRange: [0, 0.5, 1],
-  //     outputColorRange: [Colors.delete, Colors.littleMissNoName, Colors.celtic],
-  // });
+  const balloonColorStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      translateX.value,
+      [0, SLIDER_RANGE],
+      [Colors.delete, Colors.celtic]
+    );
+
+    return {
+      backgroundColor,
+    };
+  });
 
   console.log({ scrollTranslationStyle });
 
@@ -98,9 +104,9 @@ export const Slider = () => {
             {
               height: 80,
               width: BALLOON_WIDTH,
-              backgroundColor: "pink",
             },
             balloonTranslationStyle,
+            balloonColorStyle,
           ]}
         />
       </View>
