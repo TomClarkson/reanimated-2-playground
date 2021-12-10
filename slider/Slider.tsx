@@ -21,6 +21,7 @@ import {
 import { clamp } from "./utils";
 import Colors from "./Colors";
 import Svg, { Path } from "react-native-svg";
+import AnimatedText from "./AnimatedText";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -94,18 +95,6 @@ export const Slider = () => {
     };
   });
 
-  const balloonColorStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      translateX.value,
-      [0, SLIDER_RANGE / 2, SLIDER_RANGE],
-      [Colors.delete, Colors.littleMissNoName, Colors.celtic]
-    );
-
-    return {
-      backgroundColor,
-    };
-  });
-
   const animatedAccessoryColor = useDerivedValue(() => {
     return interpolateColor(
       translateX.value,
@@ -135,6 +124,14 @@ export const Slider = () => {
         { rotate: `${rotate}rad` },
       ],
     };
+  });
+
+  const stepText = useDerivedValue(() => {
+    const sliderRange = SLIDER_WIDTH - KNOB_WIDTH;
+    const oneStepValue = sliderRange / MAX_RANGE;
+    const step = Math.ceil(translateX.value / oneStepValue);
+
+    return String(step);
   });
 
   return (
@@ -167,29 +164,11 @@ export const Slider = () => {
               alignItems: "center",
             }}
           >
-            <Text>0</Text>
+            <AnimatedText text={stepText} />
           </View>
         </Animated.View>
       </View>
 
-      <View
-        style={{
-          width: SLIDER_WIDTH,
-          marginBottom: 30,
-        }}
-      >
-        <Animated.View
-          testID="Balloon"
-          style={[
-            {
-              height: 80,
-              width: BALLOON_WIDTH,
-            },
-            balloonTranslationStyle,
-            balloonColorStyle,
-          ]}
-        />
-      </View>
       <View style={styles.slider}>
         <Animated.View style={[styles.progress, progressStyle]} />
         <PanGestureHandler onGestureEvent={onGestureEvent}>
