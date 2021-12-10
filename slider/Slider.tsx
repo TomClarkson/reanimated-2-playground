@@ -47,8 +47,22 @@ const SLIDER_RANGE = SLIDER_WIDTH - KNOB_WIDTH;
 const BALLOON_WIDTH = 56;
 const BALLOON_HEIGHT = 72;
 
+const values = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+
+const getMoodValueFromPercent = (percent: number) => {
+  "worklet";
+  if (percent > 0.9) {
+    return 5;
+  }
+
+  const step = 1 / values.length;
+  const index = Math.floor(percent / step);
+  const value = values[index];
+  return value;
+};
+
 export const Slider = () => {
-  const translateX = useSharedValue(0);
+  const translateX = useSharedValue((SLIDER_WIDTH - KNOB_WIDTH) / 2);
   const velocityX = useSharedValue(0);
 
   const isSliding = useSharedValue(false);
@@ -79,14 +93,6 @@ export const Slider = () => {
     const scale = withSpring(isSliding.value ? 1.05 : 1);
 
     return { transform: [{ translateX: translateX.value }, { scale }] };
-  });
-
-  const balloonTranslationStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: translateX.value + (KNOB_WIDTH - BALLOON_WIDTH) / 2 },
-      ],
-    };
   });
 
   const progressStyle = useAnimatedStyle(() => {
@@ -127,11 +133,15 @@ export const Slider = () => {
   });
 
   const stepText = useDerivedValue(() => {
-    const sliderRange = SLIDER_WIDTH - KNOB_WIDTH;
-    const oneStepValue = sliderRange / MAX_RANGE;
-    const step = Math.ceil(translateX.value / oneStepValue);
+    // const sliderRange = SLIDER_WIDTH - KNOB_WIDTH;
+    // const oneStepValue = sliderRange / MAX_RANGE;
+    // const step = Math.ceil(translateX.value / oneStepValue);
 
-    return String(step);
+    const percent = translateX.value / SLIDER_RANGE;
+
+    const value = getMoodValueFromPercent(percent);
+
+    return String(value);
   });
 
   return (
