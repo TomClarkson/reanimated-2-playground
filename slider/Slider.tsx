@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { shadowStyle } from "./style";
 import Animated, {
   useSharedValue,
@@ -9,6 +9,10 @@ import Animated, {
   useAnimatedProps,
   useDerivedValue,
   withSpring,
+  interpolateNode,
+  Extrapolate,
+  concat,
+  interpolate,
 } from "react-native-reanimated";
 import {
   PanGestureHandler,
@@ -25,10 +29,10 @@ interface SvgComponentProps {
 }
 
 const SvgComponent = ({ animatedProps }: SvgComponentProps) => (
-  <Svg viewBox="0 0 512 512" height={BALLOON_WIDTH} width={BALLOON_WIDTH}>
+  <Svg viewBox="0 0 56 72" height={BALLOON_HEIGHT} width={BALLOON_WIDTH}>
     <AnimatedPath
       animatedProps={animatedProps}
-      d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"
+      d="M28,2.27373675e-13 C43.463973,2.27373675e-13 56,12.536027 56,28 L55.999,28.121 C56,43.6316187 46.8542666,55.873733 28.5627997,64.8465614 L28.45,64.901 L31.1316718,70.2633436 C31.4280589,70.8561178 31.1877897,71.5769255 30.5950155,71.8733126 C30.4283889,71.9566259 30.2446533,72 30.0583591,72 L25.9416409,72 C25.2788991,72 24.7416408,71.4627417 24.7416408,70.8 C24.7416408,70.6137058 24.7850149,70.4299701 24.8683282,70.2633436 L27.55,64.901 L27.4372003,64.8465614 C9.14573343,55.873733 -3.55271368e-15,43.6316187 -3.55271368e-15,28.1202186 L0.001,28.121 L0,28 C0,12.8437601 12.0420575,0.500093371 27.080355,0.0148174587 L27.5369688,0.00375120002 L28,2.27373675e-13 Z"
     />
   </Svg>
 );
@@ -39,10 +43,13 @@ const MAX_RANGE = 20;
 
 const SLIDER_RANGE = SLIDER_WIDTH - KNOB_WIDTH;
 
-const BALLOON_WIDTH = 60;
+const BALLOON_WIDTH = 56;
+const BALLOON_HEIGHT = 72;
 
 export const Slider = () => {
   const translateX = useSharedValue(0);
+  const velocityX = useSharedValue(0);
+
   const isSliding = useSharedValue(false);
 
   const onGestureEvent = useAnimatedGestureHandler<
@@ -59,9 +66,11 @@ export const Slider = () => {
         0,
         SLIDER_WIDTH - KNOB_WIDTH
       );
+      velocityX.value = event.velocityX;
     },
     onEnd: () => {
       isSliding.value = false;
+      velocityX.value = 0;
     },
   });
 
@@ -107,30 +116,31 @@ export const Slider = () => {
     fill: animatedAccessoryColor.value,
   }));
 
-  //   const animatedAccessoryProps = useAnimatedProps(() => {
-  //     fill: animatedAccessoryColor.value,
-  // })
-
-  // const rotateStyle = useAnimatedStyle(() => {
-  //   const rotate = interpolateNode(translateX.value, {
-  //     inputRange: [0, SLIDER_RANGE], // between the beginning and end of the slider
-  //     outputRange: [0, 4 * 360], // penguin will make 4 full spins
-  //     extrapolate: Extrapolate.CLAMP,
-  //   });
-
-  //   return {
-  //     transform: [{ rotate: `${rotate}deg` }],
-  //   };
-  // });
-
   console.log({ scrollTranslationStyle });
 
   const svgX = useDerivedValue(() => withSpring(translateX.value));
 
-  const svgTransitionX = useAnimatedStyle(() => {
+  // const svgRotateStyles = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [
+  //       {
+  //         rotate: `${rotate}rad`,
+  //       },
+  //     ],
+  //   };
+  // });
+
+  const svgContainerStyles = useAnimatedStyle(() => {
+    const rotate = interpolate(
+      velocityX.value,
+      [-40, -10, 0, 10, 40],
+      [0.3, 0.015, 0, -0.015, -0.3],
+      Extrapolate.CLAMP
+    );
     return {
       transform: [
         { translateX: svgX.value + (KNOB_WIDTH - BALLOON_WIDTH) / 2 },
+        { rotate: `${rotate}rad` },
       ],
     };
   });
@@ -151,13 +161,26 @@ export const Slider = () => {
           testID="Balloon"
           style={[
             {
-              height: 80,
+              height: BALLOON_HEIGHT,
               width: BALLOON_WIDTH,
             },
-            svgTransitionX,
+            svgContainerStyles,
           ]}
         >
           <SvgComponent animatedProps={animatedAccessoryProps} />
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text>0</Text>
+          </View>
         </Animated.View>
       </View>
 
