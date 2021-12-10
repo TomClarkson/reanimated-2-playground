@@ -122,16 +122,6 @@ export const Slider = () => {
 
   const svgX = useDerivedValue(() => withSpring(translateX.value));
 
-  // const svgRotateStyles = useAnimatedStyle(() => {
-  //   return {
-  //     transform: [
-  //       {
-  //         rotate: `${rotate}rad`,
-  //       },
-  //     ],
-  //   };
-  // });
-
   const svgContainerStyles = useAnimatedStyle(() => {
     const rotate = interpolate(
       velocityX.value,
@@ -146,10 +136,6 @@ export const Slider = () => {
       ],
     };
   });
-
-  // const svgTransitionX = useDerivedValue(() =>
-  //   withSpring(translateX.value + (KNOB_WIDTH - BALLOON_WIDTH) / 2)
-  // );
 
   return (
     <>
