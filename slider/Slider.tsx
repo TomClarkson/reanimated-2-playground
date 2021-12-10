@@ -13,6 +13,7 @@ import Animated, {
   Extrapolate,
   concat,
   interpolate,
+  withTiming,
 } from "react-native-reanimated";
 import {
   PanGestureHandler,
@@ -39,8 +40,7 @@ const SvgComponent = ({ animatedProps }: SvgComponentProps) => (
 );
 
 const SLIDER_WIDTH = 300;
-const KNOB_WIDTH = 70;
-const MAX_RANGE = 20;
+const KNOB_WIDTH = 40;
 
 const SLIDER_RANGE = SLIDER_WIDTH - KNOB_WIDTH;
 
@@ -85,7 +85,7 @@ export const Slider = () => {
     },
     onEnd: () => {
       isSliding.value = false;
-      velocityX.value = 0;
+      velocityX.value = withTiming(0, { duration: 200 });
     },
   });
 
@@ -93,12 +93,6 @@ export const Slider = () => {
     const scale = withSpring(isSliding.value ? 1.05 : 1);
 
     return { transform: [{ translateX: translateX.value }, { scale }] };
-  });
-
-  const progressStyle = useAnimatedStyle(() => {
-    return {
-      width: translateX.value + KNOB_WIDTH,
-    };
   });
 
   const animatedAccessoryColor = useDerivedValue(() => {
@@ -112,8 +106,6 @@ export const Slider = () => {
   const animatedAccessoryProps = useAnimatedProps(() => ({
     fill: animatedAccessoryColor.value,
   }));
-
-  console.log({ scrollTranslationStyle: knobAnimationStyle });
 
   const svgX = useDerivedValue(() => withSpring(translateX.value));
 
@@ -133,10 +125,6 @@ export const Slider = () => {
   });
 
   const stepText = useDerivedValue(() => {
-    // const sliderRange = SLIDER_WIDTH - KNOB_WIDTH;
-    // const oneStepValue = sliderRange / MAX_RANGE;
-    // const step = Math.ceil(translateX.value / oneStepValue);
-
     const percent = translateX.value / SLIDER_RANGE;
 
     const value = getMoodValueFromPercent(percent);
@@ -149,7 +137,7 @@ export const Slider = () => {
       <View
         style={{
           width: SLIDER_WIDTH,
-          marginBottom: 30,
+          marginBottom: 16,
         }}
       >
         <Animated.View
@@ -179,24 +167,38 @@ export const Slider = () => {
         </Animated.View>
       </View>
 
-      <View style={styles.slider}>
-        <Animated.View style={[styles.progress, progressStyle]} />
-        <PanGestureHandler onGestureEvent={onGestureEvent}>
-          <Animated.View style={[styles.knob, knobAnimationStyle]} />
-        </PanGestureHandler>
+      <View style={styles.sliderOuterWrapper}>
+        <View style={styles.sliderTrackLine} />
+        <View style={StyleSheet.absoluteFillObject}>
+          <PanGestureHandler onGestureEvent={onGestureEvent}>
+            <Animated.View style={[styles.knob, knobAnimationStyle]} />
+          </PanGestureHandler>
+        </View>
+      </View>
+      <View style={styles.labelWrapper}>
+        <Text style={{ color: Colors.delete, fontWeight: "500" }}>Bad</Text>
+        <Text style={{ color: Colors.celtic, fontWeight: "500" }}>Good</Text>
       </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  slider: {
+  labelWrapper: {
+    flexDirection: "row",
+    width: SLIDER_WIDTH,
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
+  sliderOuterWrapper: {
     height: KNOB_WIDTH,
     width: SLIDER_WIDTH,
-    borderRadius: KNOB_WIDTH / 2,
-    backgroundColor: "#ddd",
     justifyContent: "center",
-    ...shadowStyle,
+  },
+  sliderTrackLine: {
+    backgroundColor: "rgb(237, 239,	242)",
+    height: 1,
+    width: "100%",
   },
   progress: {
     ...StyleSheet.absoluteFillObject,
@@ -207,8 +209,8 @@ const styles = StyleSheet.create({
     height: KNOB_WIDTH,
     width: KNOB_WIDTH,
     borderRadius: KNOB_WIDTH / 2,
-    backgroundColor: "#757de8",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#fff",
+    borderColor: "#CCC",
+    borderWidth: 1,
   },
 });

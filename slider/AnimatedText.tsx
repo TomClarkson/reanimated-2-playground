@@ -17,7 +17,7 @@ const AnimatedText = ({ text }: AnimatedTextProps) => {
 
   return (
     <AnimatedTextInput
-      style={{ color: "#fff", fontSize: 18 }}
+      style={{ color: "#fff", fontSize: 18, fontWeight: "500" }}
       underlineColorAndroid="transparent"
       editable={false}
       value={text.value}
