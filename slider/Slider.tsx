@@ -74,8 +74,10 @@ export const Slider = () => {
     },
   });
 
-  const scrollTranslationStyle = useAnimatedStyle(() => {
-    return { transform: [{ translateX: translateX.value }] };
+  const knobAnimationStyle = useAnimatedStyle(() => {
+    const scale = withSpring(isSliding.value ? 1.05 : 1);
+
+    return { transform: [{ translateX: translateX.value }, { scale }] };
   });
 
   const balloonTranslationStyle = useAnimatedStyle(() => {
@@ -116,7 +118,7 @@ export const Slider = () => {
     fill: animatedAccessoryColor.value,
   }));
 
-  console.log({ scrollTranslationStyle });
+  console.log({ scrollTranslationStyle: knobAnimationStyle });
 
   const svgX = useDerivedValue(() => withSpring(translateX.value));
 
@@ -205,7 +207,7 @@ export const Slider = () => {
       <View style={styles.slider}>
         <Animated.View style={[styles.progress, progressStyle]} />
         <PanGestureHandler onGestureEvent={onGestureEvent}>
-          <Animated.View style={[styles.knob, scrollTranslationStyle]} />
+          <Animated.View style={[styles.knob, knobAnimationStyle]} />
         </PanGestureHandler>
       </View>
     </>
