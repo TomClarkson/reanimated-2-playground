@@ -14,6 +14,7 @@ import Animated, {
   concat,
   interpolate,
   withTiming,
+  withDecay,
 } from "react-native-reanimated";
 import {
   PanGestureHandler,
@@ -83,14 +84,20 @@ export const Slider = () => {
       );
       velocityX.value = event.velocityX;
     },
-    onEnd: () => {
+    onEnd: (event) => {
       isSliding.value = false;
       velocityX.value = withTiming(0, { duration: 200 });
+
+      translateX.value = withDecay({
+        velocity: event.velocityX,
+        clamp: [0, SLIDER_WIDTH - KNOB_WIDTH],
+        deceleration: 0.4,
+      });
     },
   });
 
   const knobAnimationStyle = useAnimatedStyle(() => {
-    const scale = withSpring(isSliding.value ? 1.05 : 1);
+    const scale = withSpring(isSliding.value ? 1.08 : 1);
 
     return { transform: [{ translateX: translateX.value }, { scale }] };
   });
