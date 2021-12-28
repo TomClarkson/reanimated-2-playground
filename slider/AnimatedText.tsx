@@ -21,6 +21,7 @@ const AnimatedText = ({ text }: AnimatedTextProps) => {
       underlineColorAndroid="transparent"
       editable={false}
       value={text.value}
+      // @ts-ignore
       animatedProps={animatedProps}
     />
   );

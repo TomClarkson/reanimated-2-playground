@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import SharedElementApp from "./shared-element-demo/SharedElementApp";
 import { Slider2 } from "./slider2";
+import { LoveSlider } from "./loveSlider";
 
 type RootStackParamList = {
   Home: undefined;
@@ -44,6 +45,12 @@ export default function App() {
       <Slider2 min={0} max={3000} step={15} />
     </View>
   );
+
+  // return (
+  //   <View style={{ flex: 1 }}>
+  //     <LoveSlider />
+  //   </View>
+  // );
 
   // return <SharedElementApp />;
 
