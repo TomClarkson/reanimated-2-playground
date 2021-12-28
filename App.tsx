@@ -41,7 +41,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        marginHorizontal: 16,
+      }}
+    >
       <Slider2 min={0} max={3000} step={15} />
     </View>
   );
