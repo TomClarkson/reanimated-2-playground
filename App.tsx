@@ -49,7 +49,7 @@ export default function App() {
         marginHorizontal: 16,
       }}
     >
-      <Slider2 min={0} max={3000} step={15} />
+      <Slider2 min={0} initialValue={1500} max={3000} step={15} />
     </View>
   );
 

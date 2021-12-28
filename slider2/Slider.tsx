@@ -1,5 +1,6 @@
 import React from "react";
 import Animated, {
+  runOnJS,
   useDerivedValue,
   useSharedValue,
 } from "react-native-reanimated";
@@ -57,6 +58,14 @@ export const Slider2: React.FC<SliderProps> = ({
   );
   useSetInitialValue({ translateX, sliderWidth, min, max, initialValue });
   useUpdateOuterSharedValue(value, sharedValue);
+
+  const recordResult = (value: number) => {
+    console.log({ value });
+  };
+
+  useDerivedValue(() => {
+    runOnJS(recordResult)(value.value);
+  });
 
   return (
     <Styled.Container>
