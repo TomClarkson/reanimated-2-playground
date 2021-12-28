@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import SharedElementApp from "./shared-element-demo/SharedElementApp";
+import { Slider2 } from "./slider2";
 
 type RootStackParamList = {
   Home: undefined;
@@ -38,7 +39,13 @@ function DetailsScreen() {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  return <SharedElementApp />;
+  return (
+    <View style={styles.container}>
+      <Slider2 min={0} max={3000} step={15} />
+    </View>
+  );
+
+  // return <SharedElementApp />;
 
   // return (
   //   <NavigationContainer>
